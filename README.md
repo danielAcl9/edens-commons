@@ -1,3 +1,13 @@
+# EDEN Commons
+Agricultural wisdom, from the ground up.
+
+A collective intelligence platform that fuses climate data, lunar cycles, 
+and ancestral agricultural knowledge into personalized cultivation calendars.
+Built as part of Project EDEN — an autonomous agricultural robotics ecosystem
+inspired by the Solarpunk movement.
+
+> Green Hackathon — "Think Globally, Build Locally" — June 2026
+
 ### Application Architecture
 
 
