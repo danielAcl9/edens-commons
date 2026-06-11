@@ -10,11 +10,10 @@ inspired by the Solarpunk movement.
 
 ### Application Architecture
 
-´´´
+```
 eden-commons/
 ├── app.py                  # Streamlit entry point
 ├── requirements.txt
-├── .env                    # local secrets (never committed)
 ├── .env.example            # template without values
 ├── README.md
 │
@@ -40,4 +39,4 @@ eden-commons/
 │
 └── assets/
     └── style.css           # Custom Streamlit CSS
-´´´
+```
