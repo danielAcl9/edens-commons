@@ -10,7 +10,7 @@ inspired by the Solarpunk movement.
 
 ### Application Architecture
 
-
+´´´
 eden-commons/
 ├── app.py                  # Streamlit entry point
 ├── requirements.txt
@@ -40,3 +40,4 @@ eden-commons/
 │
 └── assets/
     └── style.css           # Custom Streamlit CSS
+´´´
