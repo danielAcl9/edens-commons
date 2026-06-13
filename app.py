@@ -1,12 +1,12 @@
 import streamlit as st
+from ui.calentar_view import render_calendar_page
 
 st.set_page_config(page_title="EDEN Commons", layout="wide")
 
 page = st.sidebar.radio("Navegación", ["Calendar", "Contribute", "Browse"])
 
 if page == "Calendar":
-    st.title("Calendar")
-    st.write("Aquí irá el calendario de eventos y actividades de la comunidad.")
+    render_calendar_page()
 
 elif page == "Contribute":
     st.title("Contribute")
