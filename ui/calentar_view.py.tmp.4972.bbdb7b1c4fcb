@@ -92,15 +92,12 @@ def render_calendar_page():
                 month_name = m.get("month", "")
                 activity = m.get("activity", "unknown")
 
-                calendar_data = st.session_state["calendar_data"]
-
                 st.markdown(f"### {month_name} — {activity.capitalize()}")
                 st.write(m.get("explanation", ""))
 
-                render_crop_card(calendar_data.get("crop_data", {}))
-
                 # Lunar phases for this month
                 st.markdown("#### 🌙 Lunar Phases")
+                calendar_data = st.session_state["calendar_data"]
                 lunar_phases = calendar_data.get("lunar_phases", [])
                 month_phases = [
                     p for p in lunar_phases

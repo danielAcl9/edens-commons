@@ -1,5 +1,6 @@
 import streamlit as st
 from ui.calentar_view import render_calendar_page
+from ui.contribute_form import render_contribute_page
 
 st.set_page_config(page_title="EDEN Commons", layout="wide")
 
@@ -9,8 +10,7 @@ if page == "Calendar":
     render_calendar_page()
 
 elif page == "Contribute":
-    st.title("Contribute")
-    st.write("Aquí irá el formulario para que los miembros aporten recursos o contenido.")
+    render_contribute_page()
 
 elif page == "Browse":
     st.title("Browse")
