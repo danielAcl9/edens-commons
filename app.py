@@ -5,6 +5,9 @@ from ui.browse_commons import render_browse_page
 
 st.set_page_config(page_title="EDEN Commons", layout="wide")
 
+with open("assets/style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 page = st.sidebar.radio("Navegación", ["Calendar", "Contribute", "Browse"])
 
 if page == "Calendar":

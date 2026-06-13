@@ -1,0 +1,233 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap');
+
+* {
+    font-family: 'DM', sans-serif;
+}
+
+h1, h2, h3 {
+    font-family: 'DM', serif;
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;700&display=swap');
+
+* {
+    font-family: 'DM Sans', sans-serif;
+}
+
+h1, h2, h3 {
+    font-family: 'DM Serif Display', serif;
+}
+
+
+/* =====================================================
+   EDEN Commons — Custom Theme
+   Palette:
+     Parchment bg  #f5f0e8
+     Warm white    #fffdf7
+     Forest green  #4a7c59
+     Leaf green    #8fb339
+     Harvest gold  #d4a843
+     Dark earth    #2c2c1e
+     Soft border   #e8e0d0
+     Title Font    #Playfair Display
+     Body Font     #Lato
+   ===================================================== */
+
+/* ---------- General app background ---------- */
+.stApp {
+    background-color: #f5f0e8;
+    color: #2c2c1e;
+}
+
+section.main > div {
+    background-color: #f5f0e8;
+}
+
+/* ---------- Sidebar ---------- */
+[data-testid="stSidebar"] {
+    background-color: #4a7c59 !important;
+}
+
+[data-testid="stSidebar"] * {
+    color: #ffffff !important;
+}
+
+[data-testid="stSidebar"] .stRadio label,
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label span {
+    color: #ffffff !important;
+}
+
+/* ---------- Headings ---------- */
+h1, h2, h3,
+.stMarkdown h1,
+.stMarkdown h2,
+.stMarkdown h3 {
+    color: #4a7c59 !important;
+    font-family: Georgia, serif;
+}
+
+/* ---------- Primary buttons ---------- */
+.stButton > button {
+    background-color: #8fb339;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.stButton > button:hover {
+    background-color: #4a7c59;
+    color: #ffffff;
+}
+
+.stButton > button:active {
+    background-color: #3a6147;
+    color: #ffffff;
+}
+
+/* Form submit button */
+.stFormSubmitButton > button {
+    background-color: #8fb339;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 1.2rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.stFormSubmitButton > button:hover {
+    background-color: #4a7c59;
+    color: #ffffff;
+}
+
+/* Download button */
+[data-testid="stDownloadButton"] > button {
+    background-color: #d4a843;
+    color: #2c2c1e;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+[data-testid="stDownloadButton"] > button:hover {
+    background-color: #b8922e;
+    color: #ffffff;
+}
+
+/* ---------- Containers / cards ---------- */
+[data-testid="stContainer"] {
+    background-color: #fffdf7;
+    border: 1px solid #e8e0d0;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(44, 44, 30, 0.08);
+    margin-bottom: 0.75rem;
+}
+
+/* ---------- Input fields ---------- */
+.stTextInput input,
+.stTextArea textarea {
+    background-color: #fffdf7;
+    border: 1px solid #e8e0d0;
+    border-radius: 6px;
+    color: #2c2c1e;
+}
+
+.stTextInput input:focus,
+.stTextArea textarea:focus {
+    border-color: #8fb339 !important;
+    box-shadow: 0 0 0 2px rgba(143, 179, 57, 0.25) !important;
+}
+
+/* Selectbox */
+.stSelectbox > div > div {
+    background-color: #fffdf7;
+    border: 1px solid #e8e0d0;
+    border-radius: 6px;
+    color: #2c2c1e;
+}
+
+.stSelectbox > div > div:focus-within {
+    border-color: #8fb339 !important;
+    box-shadow: 0 0 0 2px rgba(143, 179, 57, 0.25) !important;
+}
+
+/* ---------- Dataframe / table ---------- */
+[data-testid="stDataFrame"] table thead tr th {
+    background-color: #4a7c59 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+[data-testid="stDataFrame"] table tbody tr:nth-child(even) {
+    background-color: #f0ece0;
+}
+
+[data-testid="stDataFrame"] table tbody tr:hover {
+    background-color: #e4ddc8;
+}
+
+/* ---------- Calendar month divs ---------- */
+.stMarkdown div[style*="border-radius"] {
+    border-radius: 10px !important;
+    padding: 12px 8px 8px 8px !important;
+    box-shadow: 0 2px 4px rgba(44, 44, 30, 0.12);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stMarkdown div[style*="border-radius"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(44, 44, 30, 0.18);
+}
+
+/* ---------- Alerts ---------- */
+[data-testid="stAlert"] {
+    border-radius: 8px;
+    border-left-width: 4px;
+}
+
+/* ---------- Dividers ---------- */
+hr {
+    border-color: #e8e0d0;
+}
+
+.block-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+/* Text alignment */
+.block-container p,
+.block-container li {
+    text-align: center;
+}
+
+/* Center buttons */
+.stButton {
+    text-align: center;
+}
+
+.stButton > button {
+    margin: 0 auto;
+    display: block;
+}
+
+/* Center titles */
+h1, h2, h3 {
+    text-align: center;
+}
+
+.block-container, .block-container p, .block-container div {
+    font-family: 'DM Sans', sans-serif !important;
+}
+
+.block-container h1, 
+.block-container h2, 
+.block-container h3 {
+    font-family: 'DM Serif Display', serif !important;
+}
