@@ -15,7 +15,8 @@ def render_contribute_page(t: dict):
 
     crop_names = [c[1] for c in crops]
 
-    with st.form("contribute_form"):
+    form_key = st.session_state.get("contribute_form_key", 0)
+    with st.form(f"contribute_form_{form_key}"):
         region = st.text_input(t["region"])
         selected_name = st.selectbox(t["select_crop"], crop_names)
         practice_text = st.text_area(t["practice"])
@@ -96,8 +97,10 @@ def render_contribute_page(t: dict):
             finally:
                 conn.close()
 
+            st.session_state["contribute_form_key"] = form_key + 1
             st.success(
                 t["thanks_message"].format(
                     crop=selected_name, region=region, count=region_count
                 )
             )
+            st.rerun()

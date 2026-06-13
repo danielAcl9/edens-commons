@@ -109,6 +109,121 @@ if _lcol2.button("✓ ESP" if _active == "Español" else "ESP"):
 
 t = TRANSLATIONS[st.session_state["language"]]
 
+# ── Landing page ────────────────────────────────────────────────────────────
+if not st.session_state.get("show_app", False):
+    # Hero
+    st.markdown(
+        """
+        <div style="text-align:center;padding:3rem 1rem 2rem;">
+            <h1 style="font-size:3.2rem;color:#4a7c59;margin-bottom:0.4rem;">EDEN Commons</h1>
+            <p style="font-size:1.25rem;color:#6b7c5a;margin-bottom:2rem;">
+                Agricultural wisdom, from the ground up.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    _, cta_col, _ = st.columns([2, 1, 2])
+    with cta_col:
+        if st.button("🌱 Get Started", use_container_width=True):
+            st.session_state["show_app"] = True
+            st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Three pillars
+    p1, p2, p3 = st.columns(3)
+    PILLAR_STYLE = (
+        "background-color:#fffdf7;"
+        "border:1px solid #e8e0d0;"
+        "border-radius:12px;"
+        "padding:1.4rem 1.2rem;"
+        "text-align:center;"
+        "box-shadow:0 2px 6px rgba(0,0,0,0.05);"
+        "height:100%;"
+    )
+    with p1:
+        st.markdown(
+            f'<div style="{PILLAR_STYLE}">'
+            '<div style="font-size:2rem;">🌤️</div>'
+            '<h3 style="color:#4a7c59;margin:0.5rem 0 0.4rem;">Climate Data</h3>'
+            '<p style="color:#555;margin:0;">Real temperature and precipitation data for any location worldwide.</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+    with p2:
+        st.markdown(
+            f'<div style="{PILLAR_STYLE}">'
+            '<div style="font-size:2rem;">🌙</div>'
+            '<h3 style="color:#4a7c59;margin:0.5rem 0 0.4rem;">Lunar Cycles</h3>'
+            '<p style="color:#555;margin:0;">Traditional moon phase timing from almanac wisdom.</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+    with p3:
+        st.markdown(
+            f'<div style="{PILLAR_STYLE}">'
+            '<div style="font-size:2rem;">👥</div>'
+            '<h3 style="color:#4a7c59;margin:0.5rem 0 0.4rem;">Community Knowledge</h3>'
+            '<p style="color:#555;margin:0;">Farming practices shared by people from their land.</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # How it works
+    st.markdown(
+        '<h2 style="text-align:center;color:#4a7c59;">How it works</h2>',
+        unsafe_allow_html=True,
+    )
+    s1, s2, s3 = st.columns(3)
+    STEP_STYLE = "text-align:center;padding:1rem 0.5rem;"
+    with s1:
+        st.markdown(
+            f'<div style="{STEP_STYLE}">'
+            '<div style="font-size:2rem;">1️⃣</div>'
+            '<p style="color:#2c2c1e;margin:0.4rem 0 0;">Enter your location and crop</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+    with s2:
+        st.markdown(
+            f'<div style="{STEP_STYLE}">'
+            '<div style="font-size:2rem;">2️⃣</div>'
+            '<p style="color:#2c2c1e;margin:0.4rem 0 0;">Get your personalized 12-month calendar</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+    with s3:
+        st.markdown(
+            f'<div style="{STEP_STYLE}">'
+            '<div style="font-size:2rem;">3️⃣</div>'
+            '<p style="color:#2c2c1e;margin:0.4rem 0 0;">Contribute what you know</p>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Call to action
+    st.markdown(
+        '<div style="text-align:center;padding:2rem 1rem;">'
+        '<p style="font-size:1.1rem;color:#4a7c59;font-style:italic;margin-bottom:1.2rem;">'
+        'Software for sovereignty. The knowledge belongs to the people who share it.'
+        '</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+    _, cta2_col, _ = st.columns([2, 1, 2])
+    with cta2_col:
+        if st.button("Start your calendar →", use_container_width=True):
+            st.session_state["show_app"] = True
+            st.rerun()
+
+    st.stop()
+
+# ── Main app ────────────────────────────────────────────────────────────────
 page = st.sidebar.radio(
     "Navegación",
     [t["calendar"], t["contribute"], t["browse"]],

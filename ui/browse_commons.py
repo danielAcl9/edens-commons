@@ -43,13 +43,27 @@ def _entries_to_csv(rows: list[dict]) -> bytes:
     cols = ["crop", "region", "activity", "text", "source", "status"]
     writer = csv.DictWriter(buf, fieldnames=cols, extrasaction="ignore")
     writer.writeheader()
-    writer.writerows(rows)
+    writer.writerows(
+        [{**r, "source": SOURCE_LABELS.get(r.get("source"), r.get("source"))} for r in rows]
+    )
     return buf.getvalue().encode("utf-8")
+
+
+SOURCE_LABELS = {
+    "generational": "Family tradition",
+    "personal": "Personal experience",
+    "cooperative": "Local cooperative",
+    "almanac": "Almanac tradition",
+}
 
 
 def _rows_to_df(rows: list[dict]):
     import pandas as pd
-    return pd.DataFrame(rows, columns=["crop", "region", "activity", "text", "source", "status"])
+    display_rows = [
+        {**r, "source": SOURCE_LABELS.get(r.get("source"), r.get("source"))}
+        for r in rows
+    ]
+    return pd.DataFrame(display_rows, columns=["crop", "region", "activity", "text", "source", "status"])
 
 
 def render_browse_page(t: dict):
