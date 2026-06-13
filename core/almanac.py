@@ -116,6 +116,7 @@ def _fetch_community_entries(crop_id: str) -> list:
 
 
 def generate_calendar_data(location_name: str, crop_id: str) -> dict:
+    # _geocode raises ValueError with 'No geocoding results' on bad input — let it propagate
     location = _geocode(location_name)
     lat = location["lat"]
     lon = location["lon"]
@@ -125,8 +126,18 @@ def generate_calendar_data(location_name: str, crop_id: str) -> dict:
     if cached is not None:
         return cached
 
-    climate = _fetch_climate(lat, lon)
-    lunar_phases = _lunar_phases_next_12()
+    try:
+        climate = _fetch_climate(lat, lon)
+    except Exception as e:
+        print(f"WARNING: climate fetch failed ({e}), using empty list")
+        climate = []
+
+    try:
+        lunar_phases = _lunar_phases_next_12()
+    except Exception as e:
+        print(f"WARNING: lunar phases failed ({e}), using empty list")
+        lunar_phases = []
+
     crop_data = _fetch_crop(crop_id)
     community_entries = _fetch_community_entries(crop_id)
 

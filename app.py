@@ -1,5 +1,5 @@
 import streamlit as st
-from ui.calentar_view import render_calendar_page
+from ui.calendar_view import render_calendar_page
 from ui.contribute_form import render_contribute_page
 from ui.browse_commons import render_browse_page
 

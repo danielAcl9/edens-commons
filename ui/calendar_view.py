@@ -21,8 +21,26 @@ def render_calendar_page(t: dict):
     crop_id = [c[0] for c in crops if c[1] == selected_name][0]
 
     if st.button(t["generate"]):
-        calendar_data = generate_calendar_data(location, crop_id)
-        synthesis = synthesize_calendar(calendar_data)
+        if not location.strip():
+            st.warning("Please enter a location.")
+            st.stop()
+
+        try:
+            calendar_data = generate_calendar_data(location, crop_id)
+        except Exception as e:
+            msg = str(e).lower()
+            if "geocoding" in msg or "no geocoding results" in msg:
+                st.error(
+                    'Location not found. Please try a more specific location, like a city or country.'
+                )
+            else:
+                st.error(f"Failed to load calendar data: {e}")
+            st.stop()
+
+        try:
+            synthesis = synthesize_calendar(calendar_data)
+        except Exception:
+            synthesis = None
 
         st.session_state["calendar_data"] = calendar_data
         st.session_state["synthesis"] = synthesis
