@@ -109,8 +109,28 @@ if _lcol2.button("✓ ESP" if _active == "Español" else "ESP"):
 
 t = TRANSLATIONS[st.session_state["language"]]
 
-# ── Landing page ────────────────────────────────────────────────────────────
-if not st.session_state.get("show_app", False):
+NAV_OPTIONS = ["Home", t["calendar"], t["contribute"], t["browse"]]
+
+page = st.sidebar.radio(
+    "Navegación",
+    NAV_OPTIONS,
+    index=NAV_OPTIONS.index(st.session_state.get("page", "Home")),
+)
+st.session_state["page"] = page
+
+# ── Home / Landing ───────────────────────────────────────────────────────────
+if page == "Home":
+    PILLAR_STYLE = (
+        "background-color:#fffdf7;"
+        "border:1px solid #e8e0d0;"
+        "border-radius:12px;"
+        "padding:1.4rem 1.2rem;"
+        "text-align:center;"
+        "box-shadow:0 2px 6px rgba(0,0,0,0.05);"
+        "height:100%;"
+    )
+    STEP_STYLE = "text-align:center;padding:1rem 0.5rem;"
+
     # Hero
     st.markdown(
         """
@@ -126,22 +146,13 @@ if not st.session_state.get("show_app", False):
     _, cta_col, _ = st.columns([2, 1, 2])
     with cta_col:
         if st.button("🌱 Get Started", use_container_width=True):
-            st.session_state["show_app"] = True
+            st.session_state["page"] = t["calendar"]
             st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     # Three pillars
     p1, p2, p3 = st.columns(3)
-    PILLAR_STYLE = (
-        "background-color:#fffdf7;"
-        "border:1px solid #e8e0d0;"
-        "border-radius:12px;"
-        "padding:1.4rem 1.2rem;"
-        "text-align:center;"
-        "box-shadow:0 2px 6px rgba(0,0,0,0.05);"
-        "height:100%;"
-    )
     with p1:
         st.markdown(
             f'<div style="{PILLAR_STYLE}">'
@@ -178,7 +189,6 @@ if not st.session_state.get("show_app", False):
         unsafe_allow_html=True,
     )
     s1, s2, s3 = st.columns(3)
-    STEP_STYLE = "text-align:center;padding:1rem 0.5rem;"
     with s1:
         st.markdown(
             f'<div style="{STEP_STYLE}">'
@@ -218,18 +228,11 @@ if not st.session_state.get("show_app", False):
     _, cta2_col, _ = st.columns([2, 1, 2])
     with cta2_col:
         if st.button("Start your calendar →", use_container_width=True):
-            st.session_state["show_app"] = True
+            st.session_state["page"] = t["calendar"]
             st.rerun()
 
-    st.stop()
-
-# ── Main app ────────────────────────────────────────────────────────────────
-page = st.sidebar.radio(
-    "Navegación",
-    [t["calendar"], t["contribute"], t["browse"]],
-)
-
-if page == t["calendar"]:
+# ── Main pages ───────────────────────────────────────────────────────────────
+elif page == t["calendar"]:
     render_calendar_page(t)
 
 elif page == t["contribute"]:

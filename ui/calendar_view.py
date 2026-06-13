@@ -100,7 +100,7 @@ def render_calendar_page(t: dict):
                             </div>""",
                             unsafe_allow_html=True,
                         )
-                        if st.button(month_name, key=f"month_btn_{global_idx}"):
+                        if st.button("📋 See details", key=f"month_btn_{global_idx}", use_container_width=True):
                             st.session_state["selected_month"] = global_idx
 
         if "selected_month" in st.session_state:
