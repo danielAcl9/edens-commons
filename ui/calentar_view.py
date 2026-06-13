@@ -2,6 +2,7 @@ import streamlit as st
 from db.connection import get_connection
 from core.almanac import generate_calendar_data
 from core.synthesis import synthesize_calendar
+from core.lunar_heuristics import LUNAR_SUGGESTIONS
 
 def render_calendar_page():
     st.title("EDENS Commons - Almanac")
@@ -87,5 +88,44 @@ def render_calendar_page():
             idx = st.session_state["selected_month"]
             if idx < len(months_data):
                 m = months_data[idx]
-                st.markdown(f"**{m.get('month')}** — {m.get('activity', '').capitalize()}")
+                month_name = m.get("month", "")
+                activity = m.get("activity", "unknown")
+
+                st.markdown(f"### {month_name} — {activity.capitalize()}")
                 st.write(m.get("explanation", ""))
+
+                # Lunar phases for this month
+                st.markdown("#### 🌙 Lunar Phases")
+                calendar_data = st.session_state["calendar_data"]
+                lunar_phases = calendar_data.get("lunar_phases", [])
+                month_phases = [
+                    p for p in lunar_phases
+                    if len(p.get("date", "")) >= 7 and int(p["date"][5:7]) == idx + 1
+                ]
+                if month_phases:
+                    for phase in month_phases:
+                        phase_key = phase.get("phase", "")
+                        phase_label = "🌑 New Moon" if phase_key == "new_moon" else "🌕 Full Moon"
+                        suggestion = LUNAR_SUGGESTIONS.get(phase_key, "")
+                        st.markdown(
+                            f"- **{phase_label}** on {phase['date']}  \n"
+                            f"  _{suggestion}_"
+                        )
+                else:
+                    st.write("No lunar events this month.")
+
+                # Community entries for this activity
+                st.markdown("#### 👥 Community Entries")
+                entries = calendar_data.get("community_entries", [])
+                relevant = [e for e in entries if e.get("activity") == activity]
+                if relevant:
+                    for entry in relevant:
+                        region = entry.get("region") or "Unknown region"
+                        raw_text = entry.get("raw_text") or ""
+                        source_type = entry.get("source_type") or entry.get("status") or "community"
+                        st.markdown(
+                            f"- **{region}** _{source_type}_  \n"
+                            f"  {raw_text}"
+                        )
+                else:
+                    st.write(f"No community entries for this activity yet.")
