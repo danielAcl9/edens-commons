@@ -10,6 +10,7 @@ from collections import defaultdict
 from datetime import date, datetime
 
 from db.connection import get_connection
+from db.queries import get_cached_calendar, save_calendar_cache
 
 
 def _geocode(location_name: str) -> dict:
@@ -116,12 +117,20 @@ def _fetch_community_entries(crop_id: str) -> list:
 
 def generate_calendar_data(location_name: str, crop_id: str) -> dict:
     location = _geocode(location_name)
-    climate = _fetch_climate(location["lat"], location["lon"])
+    lat = location["lat"]
+    lon = location["lon"]
+    year = date.today().year
+
+    cached = get_cached_calendar(crop_id, lat, lon, year)
+    if cached is not None:
+        return cached
+
+    climate = _fetch_climate(lat, lon)
     lunar_phases = _lunar_phases_next_12()
     crop_data = _fetch_crop(crop_id)
     community_entries = _fetch_community_entries(crop_id)
 
-    return {
+    result = {
         "location": location,
         "climate": climate,
         "lunar_phases": lunar_phases,
@@ -129,7 +138,25 @@ def generate_calendar_data(location_name: str, crop_id: str) -> dict:
         "community_entries": community_entries,
     }
 
+    save_calendar_cache(crop_id, lat, lon, year, result)
+    return result
+
 
 if __name__ == "__main__":
+    import time
+
+    print("Primera llamada (sin cache)...")
+    t0 = time.time()
     result = generate_calendar_data("Santander, Colombia", "maize")
+    t1 = time.time()
+    print(f"  Tiempo: {t1 - t0:.3f}s")
     print(json.dumps(result, ensure_ascii=False, indent=2))
+
+    print("\nSegunda llamada (con cache)...")
+    t2 = time.time()
+    result2 = generate_calendar_data("Santander, Colombia", "maize")
+    t3 = time.time()
+    print(f"  Tiempo: {t3 - t2:.3f}s")
+
+    speedup = (t1 - t0) / (t3 - t2) if (t3 - t2) > 0 else float("inf")
+    print(f"\nSpeedup: {speedup:.1f}x más rápido con cache")
