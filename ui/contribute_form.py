@@ -4,8 +4,8 @@ from db.connection import get_connection
 from core.synthesis import validate_contribution
 
 
-def render_contribute_page():
-    st.title("Contribute your knowledge")
+def render_contribute_page(t: dict):
+    st.title(t["contribute_title"])
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -16,12 +16,12 @@ def render_contribute_page():
     crop_names = [c[1] for c in crops]
 
     with st.form("contribute_form"):
-        region = st.text_input("Region (city, state or country)")
-        selected_name = st.selectbox("Crop", crop_names)
-        practice_text = st.text_area("Describe your agricultural practice")
-        timing = st.text_input("Season / timing (e.g. 'early March', 'after first rain')")
-        source = st.text_input("Source (optional — e.g. 'family tradition', 'extension service')")
-        submitted = st.form_submit_button("Submit")
+        region = st.text_input(t["region"])
+        selected_name = st.selectbox(t["select_crop"], crop_names)
+        practice_text = st.text_area(t["practice"])
+        timing = st.text_input(t["timing"])
+        source = st.text_input(t["source"])
+        submitted = st.form_submit_button(t["submit"])
 
     if submitted:
         crop_id = [c[0] for c in crops if c[1] == selected_name][0]
@@ -51,10 +51,10 @@ def render_contribute_page():
         structured = result.get("structured_json") or {}
 
         STATUS_LABELS = {
-            "verified": "✅ Verified",
-            "unverified": "🆕 New knowledge",
-            "regional_variant": "🔄 Regional variant",
-            "rejected": "❌ Rejected",
+            "verified": "✅ " + t["status_verified"],
+            "unverified": "🆕 " + t["status_unverified"],
+            "regional_variant": "🔄 " + t["status_regional"],
+            "rejected": "❌ " + t["status_rejected"],
         }
         label = STATUS_LABELS.get(status, f"ℹ️ {status.capitalize()}")
         st.markdown(f"**{label}** — {message}")
@@ -97,7 +97,7 @@ def render_contribute_page():
                 conn.close()
 
             st.success(
-                f"Thanks — your entry is now visible to others searching "
-                f"**{selected_name}** in **{region}**. "
-                f"There are now **{region_count}** entries for this crop in this region."
+                t["thanks_message"].format(
+                    crop=selected_name, region=region, count=region_count
+                )
             )

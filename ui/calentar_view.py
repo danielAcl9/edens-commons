@@ -5,10 +5,10 @@ from core.synthesis import synthesize_calendar
 from core.lunar_heuristics import LUNAR_SUGGESTIONS
 from ui.crop_card import render_crop_card
 
-def render_calendar_page():
-    st.title("EDENS Commons - Almanac")
+def render_calendar_page(t: dict):
+    st.title(t["calendar_title"])
 
-    location = st.text_input("Type in your city or location!")
+    location = st.text_input(t["location_placeholder"])
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -17,10 +17,10 @@ def render_calendar_page():
     conn.close()
 
     crop_names = [c[1] for c in crops]
-    selected_name = st.selectbox("Select your crop", crop_names)
+    selected_name = st.selectbox(t["select_crop"], crop_names)
     crop_id = [c[0] for c in crops if c[1] == selected_name][0]
 
-    if st.button("Generate Calendar"):
+    if st.button(t["generate"]):
         calendar_data = generate_calendar_data(location, crop_id)
         synthesis = synthesize_calendar(calendar_data)
 
@@ -53,7 +53,7 @@ def render_calendar_page():
             "unknown": "❓",
         }
 
-        st.markdown("### Calendar Overview")
+        st.markdown(f"### {t['calendar_overview']}")
         for row_start in range(0, 12, 4):
             row_months = months_data[row_start : row_start + 4]
             cols = st.columns(4)
@@ -100,7 +100,7 @@ def render_calendar_page():
                 render_crop_card(calendar_data.get("crop_data", {}))
 
                 # Lunar phases for this month
-                st.markdown("#### 🌙 Lunar Phases")
+                st.markdown(f"#### 🌙 {t['lunar_phases']}")
                 lunar_phases = calendar_data.get("lunar_phases", [])
                 month_phases = [
                     p for p in lunar_phases
@@ -109,22 +109,22 @@ def render_calendar_page():
                 if month_phases:
                     for phase in month_phases:
                         phase_key = phase.get("phase", "")
-                        phase_label = "🌑 New Moon" if phase_key == "new_moon" else "🌕 Full Moon"
+                        phase_label = "🌑 " + t["new_moon"] if phase_key == "new_moon" else "🌕 " + t["full_moon"]
                         suggestion = LUNAR_SUGGESTIONS.get(phase_key, "")
                         st.markdown(
                             f"- **{phase_label}** on {phase['date']}  \n"
                             f"  _{suggestion}_"
                         )
                 else:
-                    st.write("No lunar events this month.")
+                    st.write(t["no_lunar_events"])
 
                 # Community entries for this activity
-                st.markdown("#### 👥 Community Entries")
+                st.markdown(f"#### 👥 {t['community_entries']}")
                 entries = calendar_data.get("community_entries", [])
                 relevant = [e for e in entries if e.get("activity") == activity]
                 if relevant:
                     for entry in relevant:
-                        region = entry.get("region") or "Unknown region"
+                        region = entry.get("region") or t["unknown_region"]
                         raw_text = entry.get("raw_text") or ""
                         source_type = entry.get("source_type") or entry.get("status") or "community"
                         st.markdown(
@@ -132,4 +132,4 @@ def render_calendar_page():
                             f"  {raw_text}"
                         )
                 else:
-                    st.write(f"No community entries for this activity yet.")
+                    st.write(t["no_community_entries"])

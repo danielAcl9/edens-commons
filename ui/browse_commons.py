@@ -52,35 +52,36 @@ def _rows_to_df(rows: list[dict]):
     return pd.DataFrame(rows, columns=["crop", "region", "activity", "text", "source", "status"])
 
 
-def render_browse_page():
-    st.title("Browse the Commons")
+def render_browse_page(t: dict):
+    st.title(t["browse_title"])
 
     all_entries = _load_entries()
 
     if not all_entries:
-        st.info("No community entries yet. Be the first to contribute!")
+        st.info(t["no_entries"])
         return
 
-    crops_opts = ["All"] + sorted({e["crop"] for e in all_entries if e.get("crop")})
-    regions_opts = ["All"] + sorted({e["region"] for e in all_entries if e.get("region")})
-    statuses_opts = ["All"] + sorted({e["status"] for e in all_entries if e.get("status")})
+    all_opt = t["filter_all"]
+    crops_opts = [all_opt] + sorted({e["crop"] for e in all_entries if e.get("crop")})
+    regions_opts = [all_opt] + sorted({e["region"] for e in all_entries if e.get("region")})
+    statuses_opts = [all_opt] + sorted({e["status"] for e in all_entries if e.get("status")})
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        sel_crop = st.selectbox("Crop", crops_opts)
+        sel_crop = st.selectbox(t["select_crop"], crops_opts)
     with col2:
-        sel_region = st.selectbox("Region", regions_opts)
+        sel_region = st.selectbox(t["region"], regions_opts)
     with col3:
-        sel_status = st.selectbox("Status", statuses_opts)
+        sel_status = st.selectbox(t["filter_status"], statuses_opts)
 
     filtered = [
         e for e in all_entries
-        if (sel_crop == "All" or e.get("crop") == sel_crop)
-        and (sel_region == "All" or e.get("region") == sel_region)
-        and (sel_status == "All" or e.get("status") == sel_status)
+        if (sel_crop == all_opt or e.get("crop") == sel_crop)
+        and (sel_region == all_opt or e.get("region") == sel_region)
+        and (sel_status == all_opt or e.get("status") == sel_status)
     ]
 
-    st.markdown(f"**{len(filtered)}** entries found")
+    st.markdown(t["entries_found"].format(count=len(filtered)))
 
     if _HAS_PANDAS:
         df = _rows_to_df(filtered)
@@ -90,7 +91,7 @@ def render_browse_page():
 
     csv_bytes = _entries_to_csv(filtered)
     st.download_button(
-        label="⬇️ Download as CSV",
+        label=t["download_csv"],
         data=csv_bytes,
         file_name="edens_commons_entries.csv",
         mime="text/csv",
