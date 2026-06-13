@@ -15,7 +15,7 @@ Built as part of **Project EDEN** — an autonomous agricultural robotics ecosys
 
 > *Software for sovereignty — the knowledge belongs to the people who share it.*
 
-> 🌿 Green Hackathon — "Think Globally, Build Locally" — June 2026
+> 🌿 Green Hackathon — "Think Globally, Build Locally" — June 2026 Hopamine Community
 
 ---
 
@@ -127,4 +127,4 @@ Commons feeds ARIA. ARIA defends the land. The knowledge stays with the people.
 
 ---
 
-*Built with 🌱 by the EDEN team · Solarpunk · Open source · For the commons*
+*Built with 🌱 by the EDEN team · Solarpunk · Open source · For the commons · Project Developed by Daniel Amado*
