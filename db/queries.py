@@ -4,7 +4,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import hashlib
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 from db.connection import get_connection
@@ -32,7 +32,7 @@ def get_cached_calendar(crop_id: str, lat: float, lon: float, year: int) -> dict
         return None
 
     expires_at = datetime.fromisoformat(row["expires_at"])
-    if datetime.utcnow() > expires_at:
+    if datetime.now(timezone.utc).replace(tzinfo=None) > expires_at:
         return None
 
     return json.loads(row["calendar_json"])
@@ -42,7 +42,7 @@ def save_calendar_cache(
     crop_id: str, lat: float, lon: float, year: int, calendar_data: dict
 ) -> None:
     cache_id = _cache_id(crop_id, lat, lon, year)
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     expires_at = now + timedelta(days=7)
 
     conn = get_connection()

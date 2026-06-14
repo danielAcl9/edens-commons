@@ -90,13 +90,11 @@ Include all 12 months in order."""
             messages=[{"role": "user", "content": prompt}],
         )
         text = next((b.text for b in response.content if b.type == "text"), "")
-        print(f"[DEBUG synthesize_calendar] raw response:\n{text}\n")
         start = text.find("{")
         end = text.rfind("}") + 1
         json_str = text[start:end] if start != -1 and end > start else text
         return json.loads(json_str)
-    except Exception as e:
-        print(f"ERROR: {e}")
+    except Exception:
         return None
 
 
@@ -163,71 +161,13 @@ Use this exact structure:
             messages=[{"role": "user", "content": prompt}],
         )
         text = next((b.text for b in response.content if b.type == "text"), "")
-        print(f"[DEBUG validate_contribution] raw response:\n{text}\n")
         start = text.find("{")
         end = text.rfind("}") + 1
         json_str = text[start:end] if start != -1 and end > start else text
         return json.loads(json_str)
-    except Exception as e:
-        print(f"ERROR: {e}")
+    except Exception:
         return {
             "structured_json": None,
             "status": "unverified",
             "message": "Could not validate automatically — saved for review.",
         }
-
-
-if __name__ == "__main__":
-    from core.almanac import generate_calendar_data
-    from db.connection import get_connection
-
-    print("=" * 60)
-    print("TEST 1: synthesize_calendar")
-    print("=" * 60)
-
-    calendar_data = generate_calendar_data("Santander, Colombia", "maize")
-    result = synthesize_calendar(calendar_data)
-    if result:
-        for m in result.get("months", []):
-            print(f"  {m['month']:>10}: {m['activity']:<12} — {m['explanation']}")
-    else:
-        print("  synthesize_calendar returned None (Claude call failed)")
-
-    print()
-    print("=" * 60)
-    print("TEST 2: validate_contribution")
-    print("=" * 60)
-
-    form_data = {
-        "region": "Santander, Colombia",
-        "crop_id": "maize",
-        "practice_text": (
-            "En Santander sembramos maíz al inicio de la temporada de lluvias, "
-            "generalmente en marzo o abril, cuando la luna está en cuarto creciente. "
-            "La tierra debe estar bien preparada con abono orgánico."
-        ),
-        "timing": "March–April",
-        "source": "Traditional farmer knowledge",
-    }
-
-    conn = get_connection()
-    conn.row_factory = lambda cur, row: dict(zip([c[0] for c in cur.description], row))
-    try:
-        cur = conn.execute(
-            "SELECT * FROM community_entries WHERE crop_id = ? ORDER BY created_at DESC LIMIT 20",
-            ("maize",),
-        )
-        existing = cur.fetchall()
-    finally:
-        conn.close()
-
-    validation = validate_contribution(form_data, existing)
-    print(f"  Status          : {validation.get('status')}")
-    print(f"  Message         : {validation.get('message')}")
-    structured = validation.get("structured_json") or {}
-    if structured:
-        print(f"  Activity        : {structured.get('activity')}")
-        print(f"  Lunar condition : {structured.get('lunar_condition')}")
-        print(f"  Soil condition  : {structured.get('soil_condition')}")
-        print(f"  Timing local    : {structured.get('timing_local')}")
-        print(f"  Hemisphere      : {structured.get('timing_hemisphere')}")

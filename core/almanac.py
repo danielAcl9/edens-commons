@@ -2,7 +2,6 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
 import json
 import requests
 import ephem
@@ -128,14 +127,12 @@ def generate_calendar_data(location_name: str, crop_id: str) -> dict:
 
     try:
         climate = _fetch_climate(lat, lon)
-    except Exception as e:
-        print(f"WARNING: climate fetch failed ({e}), using empty list")
+    except Exception:
         climate = []
 
     try:
         lunar_phases = _lunar_phases_next_12()
-    except Exception as e:
-        print(f"WARNING: lunar phases failed ({e}), using empty list")
+    except Exception:
         lunar_phases = []
 
     crop_data = _fetch_crop(crop_id)
@@ -151,23 +148,3 @@ def generate_calendar_data(location_name: str, crop_id: str) -> dict:
 
     save_calendar_cache(crop_id, lat, lon, year, result)
     return result
-
-
-if __name__ == "__main__":
-    import time
-
-    print("Primera llamada (sin cache)...")
-    t0 = time.time()
-    result = generate_calendar_data("Santander, Colombia", "maize")
-    t1 = time.time()
-    print(f"  Tiempo: {t1 - t0:.3f}s")
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-
-    print("\nSegunda llamada (con cache)...")
-    t2 = time.time()
-    result2 = generate_calendar_data("Santander, Colombia", "maize")
-    t3 = time.time()
-    print(f"  Tiempo: {t3 - t2:.3f}s")
-
-    speedup = (t1 - t0) / (t3 - t2) if (t3 - t2) > 0 else float("inf")
-    print(f"\nSpeedup: {speedup:.1f}x más rápido con cache")

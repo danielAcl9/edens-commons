@@ -11,42 +11,49 @@ def render_calendar_page(t: dict):
     location = st.text_input(t["location_placeholder"])
 
     conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, common_name FROM crops ORDER BY common_name")
-    crops = cursor.fetchall()
-    conn.close()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, common_name FROM crops ORDER BY common_name")
+        crops = cursor.fetchall()
+    finally:
+        conn.close()
 
     crop_names = [c[1] for c in crops]
     selected_name = st.selectbox(t["select_crop"], crop_names)
-    crop_id = [c[0] for c in crops if c[1] == selected_name][0]
+    crop_id = next((c[0] for c in crops if c[1] == selected_name), None)
 
     if st.button(t["generate"]):
         if not location.strip():
             st.warning("Please enter a location.")
             st.stop()
 
-        try:
-            calendar_data = generate_calendar_data(location, crop_id)
-        except Exception as e:
-            msg = str(e).lower()
-            if "geocoding" in msg or "no geocoding results" in msg:
-                st.error(
-                    'Location not found. Please try a more specific location, like a city or country.'
-                )
-            else:
-                st.error(f"Failed to load calendar data: {e}")
+        if crop_id is None:
+            st.error("Please select a valid crop.")
             st.stop()
 
-        try:
-            synthesis = synthesize_calendar(calendar_data)
-        except Exception:
-            synthesis = None
+        with st.spinner("Loading climate and lunar data…"):
+            try:
+                calendar_data = generate_calendar_data(location, crop_id)
+            except Exception as e:
+                msg = str(e).lower()
+                if "geocoding" in msg or "no geocoding results" in msg:
+                    st.error(
+                        'Location not found. Please try a more specific location, like a city or country.'
+                    )
+                else:
+                    st.error(f"Failed to load calendar data: {e}")
+                st.stop()
+
+        with st.spinner("Synthesizing your calendar with AI…"):
+            try:
+                synthesis = synthesize_calendar(calendar_data)
+            except Exception:
+                synthesis = None
 
         st.session_state["calendar_data"] = calendar_data
         st.session_state["synthesis"] = synthesis
 
-        st.write(f"Location found: {calendar_data['location']['name']}")
-        st.write("Calendar generated succesfully!")
+        st.success(f"Calendar ready — {calendar_data['location']['name']}")
 
     if "calendar_data" in st.session_state and "synthesis" in st.session_state:
         synthesis = st.session_state["synthesis"]

@@ -8,10 +8,12 @@ def render_contribute_page(t: dict):
     st.title(t["contribute_title"])
 
     conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, common_name FROM crops")
-    crops = cursor.fetchall()
-    conn.close()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, common_name FROM crops")
+        crops = cursor.fetchall()
+    finally:
+        conn.close()
 
     crop_names = [c[1] for c in crops]
 
@@ -26,7 +28,10 @@ def render_contribute_page(t: dict):
         submitted = st.form_submit_button(t["submit"])
 
     if submitted:
-        crop_id = [c[0] for c in crops if c[1] == selected_name][0]
+        crop_id = next((c[0] for c in crops if c[1] == selected_name), None)
+        if crop_id is None:
+            st.error("Please select a valid crop.")
+            st.stop()
 
         form_data = {
             "region": region,
@@ -47,7 +52,8 @@ def render_contribute_page(t: dict):
         finally:
             conn.close()
 
-        result = validate_contribution(form_data, existing_entries)
+        with st.spinner("Validating your contribution…"):
+            result = validate_contribution(form_data, existing_entries)
         status = result.get("status", "unverified")
         message = result.get("message", "")
         structured = result.get("structured_json") or {}
@@ -64,8 +70,8 @@ def render_contribute_page(t: dict):
         if status != "rejected":
             conn = get_connection()
             try:
-                cur = conn.execute("SELECT COUNT(*) FROM community_entries")
-                count = cur.fetchone()[0]
+                row = conn.execute("SELECT COUNT(*) FROM community_entries").fetchone()
+                count = row[0] if row else 0
                 new_id = f"entry_{count + 1:04d}"
 
                 conn.execute(
@@ -90,11 +96,11 @@ def render_contribute_page(t: dict):
                 )
                 conn.commit()
 
-                cur = conn.execute(
+                row = conn.execute(
                     "SELECT COUNT(*) FROM community_entries WHERE crop_id = ? AND region = ?",
                     (crop_id, region),
-                )
-                region_count = cur.fetchone()[0]
+                ).fetchone()
+                region_count = row[0] if row else 1
             finally:
                 conn.close()
 
