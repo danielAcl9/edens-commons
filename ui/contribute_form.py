@@ -57,6 +57,8 @@ def render_contribute_page(t: dict):
         status = result.get("status", "unverified")
         message = result.get("message", "")
         structured = result.get("structured_json") or {}
+        if isinstance(structured, list):
+            structured = structured[0] if structured and isinstance(structured[0], dict) else {}
 
         STATUS_LABELS = {
             "verified": "✅ " + t["status_verified"],
