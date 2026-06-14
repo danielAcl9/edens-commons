@@ -49,6 +49,15 @@ def _entries_to_csv(rows: list[dict]) -> bytes:
     return buf.getvalue().encode("utf-8")
 
 
+def normalize_region(region):
+    if not region:
+        return ""
+    region = region.strip()
+    region = region.rstrip(",")
+    region = " ".join(region.split())
+    return region
+
+
 SOURCE_LABELS = {
     "generational": "Family tradition",
     "personal": "Personal experience",
@@ -77,7 +86,7 @@ def render_browse_page(t: dict):
 
     all_opt = t["filter_all"]
     crops_opts = [all_opt] + sorted({e["crop"] for e in all_entries if e.get("crop")})
-    regions_opts = [all_opt] + sorted({e["region"] for e in all_entries if e.get("region")})
+    regions_opts = [all_opt] + sorted({normalize_region(e["region"]) for e in all_entries if e.get("region")})
     statuses_opts = [all_opt] + sorted({e["status"] for e in all_entries if e.get("status")})
 
     col1, col2, col3 = st.columns(3)
@@ -91,7 +100,7 @@ def render_browse_page(t: dict):
     filtered = [
         e for e in all_entries
         if (sel_crop == all_opt or e.get("crop") == sel_crop)
-        and (sel_region == all_opt or e.get("region") == sel_region)
+        and (sel_region == all_opt or normalize_region(e.get("region", "")) == sel_region)
         and (sel_status == all_opt or e.get("status") == sel_status)
     ]
 
