@@ -20,7 +20,7 @@ def render_contribute_page(t: dict):
     st.caption("Share what you know — a family tradition, a local practice, or something that works on your land. AI will help organize and validate your contribution.")
 
     with st.form("contribute_form"):
-        region = st.text_input(t["region"])
+        region = st.text_input(t["region"], placeholder="Format: City or Region, Country")
         selected_name = st.selectbox(t["select_crop"], crop_names)
         practice_text = st.text_area(t["practice"])
         timing = st.text_input(t["timing"])
