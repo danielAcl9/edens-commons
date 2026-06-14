@@ -15,6 +15,8 @@ def render_contribute_page(t: dict):
 
     crop_names = [c[1] for c in crops]
 
+    st.caption("Share what you know — a family tradition, a local practice, or something that works on your land. AI will help organize and validate your contribution.")
+
     with st.form("contribute_form"):
         region = st.text_input(t["region"])
         selected_name = st.selectbox(t["select_crop"], crop_names)

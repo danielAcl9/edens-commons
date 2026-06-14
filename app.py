@@ -100,12 +100,18 @@ if "language" not in st.session_state:
 
 _lcol1, _lcol2 = st.sidebar.columns(2)
 _active = st.session_state["language"]
-if _lcol1.button("✓ ENG" if _active == "English" else "ENG"):
-    st.session_state["language"] = "English"
-    st.rerun()
-if _lcol2.button("✓ ESP" if _active == "Español" else "ESP"):
-    st.session_state["language"] = "Español"
-    st.rerun()
+with _lcol1:
+    st.markdown('<div style="text-align:center">', unsafe_allow_html=True)
+    if st.button("✓ ENG" if _active == "English" else "ENG", use_container_width=True):
+        st.session_state["language"] = "English"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+with _lcol2:
+    st.markdown('<div style="text-align:center">', unsafe_allow_html=True)
+    if st.button("✓ ESP" if _active == "Español" else "ESP", use_container_width=True):
+        st.session_state["language"] = "Español"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 t = TRANSLATIONS[st.session_state["language"]]
 
